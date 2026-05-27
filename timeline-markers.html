@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Timeline Markers — Before / After (DapSliderBridge)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background: #faf8f1; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .label-h { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6b7280; }
+  .section-bg { background-color: #f7f4eb; }
+</style>
+</head>
+<body class="p-10">
+
+<div class="max-w-5xl mx-auto space-y-12">
+
+  <header>
+    <h1 class="text-xl font-bold text-gray-900">Plot Intelligence — timeline markers</h1>
+    <p class="text-sm text-gray-500 mt-1">
+      File: <code class="text-xs bg-gray-100 px-1.5 py-0.5 rounded">Mapana-Insight/src/components/plot-intelligence/DapSliderBridge.vue</code>
+    </p>
+    <p class="text-sm text-gray-500 mt-1">
+      Both bars below use the same mock data: 4 stages, 1 sample at DAP 14, 1 next-fert at DAP 22, 3 applied/planned fert events, thumb on DAP 21.
+    </p>
+  </header>
+
+  <!-- ───────────────────────── BEFORE ───────────────────────── -->
+  <section>
+    <div class="label-h mb-3">Before — live in production today</div>
+    <div class="section-bg rounded-xl px-6 py-4 select-none">
+      <!-- Stage legend chips -->
+      <div class="flex items-center gap-3 mb-3 flex-wrap">
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#10b981"></span>
+          <span class="text-[10px] font-bold text-gray-800">Vegetative</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#60a5fa"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Initiation</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#f59e0b"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Bulking</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#dc2626"></span>
+          <span class="text-[10px] font-medium text-gray-400">Maturation</span>
+        </div>
+      </div>
+
+      <!-- Bar -->
+      <div class="relative h-10 rounded-full mb-8">
+        <!-- Stage segments -->
+        <div class="absolute inset-0 flex rounded-full overflow-hidden">
+          <div style="width:30%; background-color:#10b981; opacity:1"></div>
+          <div style="width:20%; background-color:#60a5fa; opacity:0.3"></div>
+          <div style="width:30%; background-color:#f59e0b; opacity:0.3"></div>
+          <div style="width:20%; background-color:#dc2626; opacity:0.3"></div>
+        </div>
+
+        <!-- Date labels under bar -->
+        <div class="absolute -translate-x-1/2 text-[10px] text-gray-400 font-medium whitespace-nowrap" style="left:12%; top:calc(100% + 6px)">14 May</div>
+        <div class="absolute -translate-x-1/2 text-[10px] text-gray-800 font-semibold whitespace-nowrap" style="left:18%; top:calc(100% + 6px)">21 May</div>
+
+        <!-- Fert markers (applied/planned dots — w-2 h-2) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:42%">
+          <div class="rounded-full border-2 border-white shadow-sm w-2 h-2 bg-gray-900"></div>
+        </div>
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:68%">
+          <div class="rounded-full border-2 border-white shadow-sm w-2 h-2 bg-gray-900"></div>
+        </div>
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:86%">
+          <div class="rounded-full border-2 border-white shadow-sm w-2 h-2 bg-gray-900"></div>
+        </div>
+
+        <!-- Next fert marker (w-3 h-3 + ring-2) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:22%">
+          <div class="rounded-full border-2 border-white shadow-sm w-3 h-3 bg-gray-900 ring-2 ring-gray-300"></div>
+        </div>
+
+        <!-- Sample marker (w-1.5 h-1.5 fuchsia diamond) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[6] pointer-events-none" style="left:12%">
+          <div class="w-1.5 h-1.5 bg-fuchsia-500 border border-white shadow-sm" style="transform:rotate(45deg)"></div>
+        </div>
+
+        <!-- Drag thumb (w-5 h-5 — NOT being resized in this proposal) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 border-[3px] border-white rounded-full shadow-md z-10" style="left:18%; background-color:#10b981"></div>
+      </div>
+    </div>
+
+    <div class="mt-3 text-xs text-gray-500 space-y-1">
+      <div><span class="inline-block w-1.5 h-1.5 bg-fuchsia-500 align-middle" style="transform:rotate(45deg)"></span> &nbsp;Sample collection — <code>w-1.5 h-1.5</code> (6×6 px)</div>
+      <div><span class="inline-block w-2 h-2 rounded-full bg-gray-900 border-2 border-white align-middle"></span> &nbsp;Fertilizer applied / planned — <code>w-2 h-2</code> (8×8 px)</div>
+      <div><span class="inline-block w-3 h-3 rounded-full bg-gray-900 border-2 border-white ring-2 ring-gray-300 align-middle"></span> &nbsp;Next fertilizer application — <code>w-3 h-3 + ring-2</code> (12×12 px)</div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── OPTION A ───────────────────────── -->
+  <section>
+    <div class="label-h mb-3">Option A — bigger dots / diamonds (same shape language as today)</div>
+    <div class="section-bg rounded-xl px-6 py-4 select-none">
+      <!-- Stage legend chips -->
+      <div class="flex items-center gap-3 mb-3 flex-wrap">
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#10b981"></span>
+          <span class="text-[10px] font-bold text-gray-800">Vegetative</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#60a5fa"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Initiation</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#f59e0b"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Bulking</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#dc2626"></span>
+          <span class="text-[10px] font-medium text-gray-400">Maturation</span>
+        </div>
+      </div>
+
+      <!-- Bar -->
+      <div class="relative h-10 rounded-full mb-8">
+        <!-- Stage segments -->
+        <div class="absolute inset-0 flex rounded-full overflow-hidden">
+          <div style="width:30%; background-color:#10b981; opacity:1"></div>
+          <div style="width:20%; background-color:#60a5fa; opacity:0.3"></div>
+          <div style="width:30%; background-color:#f59e0b; opacity:0.3"></div>
+          <div style="width:20%; background-color:#dc2626; opacity:0.3"></div>
+        </div>
+
+        <!-- Date labels under bar -->
+        <div class="absolute -translate-x-1/2 text-[10px] text-gray-400 font-medium whitespace-nowrap" style="left:12%; top:calc(100% + 6px)">14 May</div>
+        <div class="absolute -translate-x-1/2 text-[10px] text-gray-800 font-semibold whitespace-nowrap" style="left:18%; top:calc(100% + 6px)">21 May</div>
+
+        <!-- Fert markers (applied/planned dots — w-2.5 h-2.5) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:42%">
+          <div class="rounded-full border-2 border-white shadow-sm w-2.5 h-2.5 bg-gray-900"></div>
+        </div>
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:68%">
+          <div class="rounded-full border-2 border-white shadow-sm w-2.5 h-2.5 bg-gray-900"></div>
+        </div>
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:86%">
+          <div class="rounded-full border-2 border-white shadow-sm w-2.5 h-2.5 bg-gray-900"></div>
+        </div>
+
+        <!-- Next fert marker (w-3.5 h-3.5 + thinner ring) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[5] p-2" style="left:22%">
+          <div class="rounded-full border-2 border-white shadow-sm w-3.5 h-3.5 bg-gray-900" style="box-shadow: 0 0 0 1.5px #d1d5db, 0 1px 2px rgba(0,0,0,0.1);"></div>
+        </div>
+
+        <!-- Sample marker (w-2.5 h-2.5 fuchsia diamond, border-2) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-[6] pointer-events-none" style="left:12%">
+          <div class="w-2.5 h-2.5 bg-fuchsia-500 border-2 border-white shadow-sm" style="transform:rotate(45deg)"></div>
+        </div>
+
+        <!-- Drag thumb (UNCHANGED — w-5 h-5) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 border-[3px] border-white rounded-full shadow-md z-10" style="left:18%; background-color:#10b981"></div>
+      </div>
+    </div>
+
+    <div class="mt-3 text-xs text-gray-500 space-y-1">
+      <div><span class="inline-block w-2.5 h-2.5 bg-fuchsia-500 border-2 border-white align-middle" style="transform:rotate(45deg)"></span> &nbsp;Sample collection — <code>w-2.5 h-2.5 border-2</code> (10×10 px)</div>
+      <div><span class="inline-block w-2.5 h-2.5 rounded-full bg-gray-900 border-2 border-white align-middle"></span> &nbsp;Fertilizer applied / planned — <code>w-2.5 h-2.5</code> (10×10 px)</div>
+      <div><span class="inline-block w-3.5 h-3.5 rounded-full bg-gray-900 border-2 border-white align-middle" style="box-shadow: 0 0 0 1.5px #d1d5db;"></span> &nbsp;Next fertilizer application — <code>w-3.5 h-3.5 + ring-[1.5px]</code> (14×14 px)</div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── OPTION B ───────────────────────── -->
+  <section>
+    <div class="label-h mb-3">Option B — vertical tick lines + always-visible dates</div>
+    <div class="section-bg rounded-xl px-6 py-4 pb-12 select-none">
+      <!-- Stage legend chips -->
+      <div class="flex items-center gap-3 mb-3 flex-wrap">
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#10b981"></span>
+          <span class="text-[10px] font-bold text-gray-800">Vegetative</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#60a5fa"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Initiation</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#f59e0b"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Bulking</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#dc2626"></span>
+          <span class="text-[10px] font-medium text-gray-400">Maturation</span>
+        </div>
+      </div>
+
+      <!-- Bar -->
+      <div class="relative h-10 rounded-full mb-2">
+        <!-- Stage segments -->
+        <div class="absolute inset-0 flex rounded-full overflow-hidden">
+          <div style="width:30%; background-color:#10b981; opacity:1"></div>
+          <div style="width:20%; background-color:#60a5fa; opacity:0.3"></div>
+          <div style="width:30%; background-color:#f59e0b; opacity:0.3"></div>
+          <div style="width:20%; background-color:#dc2626; opacity:0.3"></div>
+        </div>
+
+        <!-- Sample tick (fuchsia vertical line, extends slightly above + below the bar) -->
+        <div class="absolute -translate-x-1/2 z-[6] pointer-events-none" style="left:12%; top:-6px; height:calc(100% + 12px); width:3px; background-color:#d946ef; border-radius:1.5px; box-shadow:0 0 0 1px white;"></div>
+
+        <!-- Applied / planned fert ticks (thin dark vertical lines, span the bar height) -->
+        <div class="absolute top-0 -translate-x-1/2 z-[5]" style="left:42%; height:100%; width:2px; background-color:#111827; box-shadow:0 0 0 1px white;"></div>
+        <div class="absolute top-0 -translate-x-1/2 z-[5]" style="left:68%; height:100%; width:2px; background-color:#111827; box-shadow:0 0 0 1px white;"></div>
+        <div class="absolute top-0 -translate-x-1/2 z-[5]" style="left:86%; height:100%; width:2px; background-color:#111827; box-shadow:0 0 0 1px white;"></div>
+
+        <!-- Next fert tick (thicker, taller, with a cap-circle on top so it leads the eye) -->
+        <div class="absolute -translate-x-1/2 z-[7]" style="left:22%; top:-8px; height:calc(100% + 16px); width:3px; background-color:#111827; box-shadow:0 0 0 1px white;"></div>
+        <div class="absolute -translate-x-1/2 z-[7] rounded-full bg-gray-900 border-2 border-white shadow-sm" style="left:22%; top:-12px; width:10px; height:10px;"></div>
+
+        <!-- Drag thumb -->
+        <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 border-[3px] border-white rounded-full shadow-md z-10" style="left:18%; background-color:#10b981"></div>
+      </div>
+
+      <!-- Always-visible date labels under each marker -->
+      <div class="relative h-12 mt-3">
+        <!-- Sample label (14 May) -->
+        <div class="absolute -translate-x-1/2 flex flex-col items-center" style="left:12%">
+          <span class="text-[9px] uppercase tracking-wide text-fuchsia-600 font-semibold">Sample</span>
+          <span class="text-[11px] text-gray-700 font-medium">14 May</span>
+        </div>
+
+        <!-- Thumb (21 May — current selected day) -->
+        <div class="absolute -translate-x-1/2 flex flex-col items-center" style="left:18%">
+          <span class="text-[9px] uppercase tracking-wide text-emerald-700 font-semibold">Today</span>
+          <span class="text-[11px] text-gray-900 font-bold">21 May</span>
+        </div>
+
+        <!-- Next fert (22 May) — offset down to avoid colliding with Today label -->
+        <div class="absolute -translate-x-1/2 flex flex-col items-center" style="left:22%; top:22px">
+          <span class="text-[9px] uppercase tracking-wide text-gray-700 font-semibold">Next fert</span>
+          <span class="text-[11px] text-gray-900 font-bold">22 May</span>
+        </div>
+
+        <!-- Applied fert (29 May) -->
+        <div class="absolute -translate-x-1/2 flex flex-col items-center" style="left:42%">
+          <span class="text-[9px] uppercase tracking-wide text-gray-500">Fert</span>
+          <span class="text-[11px] text-gray-700">29 May</span>
+        </div>
+
+        <!-- Applied fert (12 Jun) -->
+        <div class="absolute -translate-x-1/2 flex flex-col items-center" style="left:68%">
+          <span class="text-[9px] uppercase tracking-wide text-gray-500">Fert</span>
+          <span class="text-[11px] text-gray-700">12 Jun</span>
+        </div>
+
+        <!-- Applied fert (24 Jun) -->
+        <div class="absolute -translate-x-1/2 flex flex-col items-center" style="left:86%">
+          <span class="text-[9px] uppercase tracking-wide text-gray-500">Fert</span>
+          <span class="text-[11px] text-gray-700">24 Jun</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 text-xs text-gray-500 space-y-1">
+      <div><span class="inline-block align-middle" style="width:3px; height:14px; background-color:#d946ef; border-radius:1.5px; box-shadow:0 0 0 1px white;"></span> &nbsp;Sample collection — fuchsia tick (3 × 14 px, extends above + below bar)</div>
+      <div><span class="inline-block align-middle" style="width:2px; height:14px; background-color:#111827; box-shadow:0 0 0 1px white;"></span> &nbsp;Fertilizer applied / planned — thin dark tick spanning bar height</div>
+      <div><span class="inline-block align-middle relative" style="width:10px; height:18px;"><span style="position:absolute; left:50%; transform:translateX(-50%); top:0; width:3px; height:18px; background-color:#111827; box-shadow:0 0 0 1px white;"></span><span style="position:absolute; left:50%; transform:translateX(-50%); top:-2px; width:8px; height:8px; border-radius:50%; background:#111827; border:1.5px solid white;"></span></span> &nbsp;Next fertilizer application — thicker tick with capped circle on top</div>
+      <div class="pt-1 text-gray-400">All dates visible under the bar at all times — no hover needed.</div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── OPTION C — CLIENT REFERENCE VOCABULARY ───────────────────────── -->
+  <section>
+    <div class="label-h mb-3">Option C — client reference vocabulary (spheres = fertilizer, stars = samplings, interactive)</div>
+    <p class="text-xs text-gray-500 mb-3 -mt-1">
+      Realistic irregular schedule — samplings and fertilizer applications cluster and gap.
+      ○ hollow sphere = fertilizer · ● solid = next fertilizer · ✦ outline star = sampling · ★ filled = selected sampling · dark cap = base application (DAP 0).
+      <span class="text-emerald-700 font-medium">Drag the thumb — it snaps to the nearest sampling and the bubble shows that sampling's reading.</span>
+    </p>
+    <div class="section-bg rounded-xl px-6 pt-5 pb-4 select-none">
+      <!-- Stage legend chips -->
+      <div class="flex items-center gap-3 mb-3 flex-wrap">
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#10b981"></span>
+          <span class="text-[10px] font-bold text-gray-800">Vegetative</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#60a5fa"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Initiation</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#f59e0b"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Bulking</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#dc2626"></span>
+          <span class="text-[10px] font-medium text-gray-400">Maturation</span>
+        </div>
+      </div>
+
+      <!-- Bar (interactive) -->
+      <div id="optc-bar" class="relative h-10 rounded-full mb-2 mt-16 cursor-pointer touch-none">
+        <!-- Stage segments -->
+        <div class="absolute inset-0 flex rounded-full overflow-hidden">
+          <div style="width:30%; background-color:#10b981; opacity:1"></div>
+          <div style="width:20%; background-color:#60a5fa; opacity:0.3"></div>
+          <div style="width:30%; background-color:#f59e0b; opacity:0.3"></div>
+          <div style="width:20%; background-color:#dc2626; opacity:0.3"></div>
+        </div>
+        <!-- Faint 10-DAP ruler gridlines -->
+        <div id="optc-grid" class="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-[1]"></div>
+        <!-- Hover tooltip -->
+        <div id="optc-tip" class="absolute -translate-x-1/2 pointer-events-none transition-opacity duration-100" style="left:0; bottom:calc(100% + 16px); opacity:0; z-index:30">
+          <div class="bg-gray-900 text-white rounded-md px-2.5 py-1.5 shadow-lg" style="min-width:180px">
+            <div class="tt-title text-[11px] font-semibold leading-tight"></div>
+            <div class="tt-sub text-[10px] text-gray-300 leading-tight mt-0.5"></div>
+            <div class="tt-list text-[10px] text-gray-300 leading-snug mt-1.5 pt-1.5 border-t border-gray-700 space-y-0.5"></div>
+          </div>
+          <div class="absolute left-1/2 -translate-x-1/2 top-full" style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #111827"></div>
+        </div>
+        <!-- Selected-sampling bubble -->
+        <div id="optc-thumb-tip" class="absolute -translate-x-1/2 pointer-events-none transition-all duration-150" style="left:0; bottom:calc(100% + 16px); z-index:25">
+          <div id="optc-thumb-bubble" class="rounded-md px-2 py-1 shadow whitespace-nowrap text-[10px] font-semibold leading-tight text-center text-white" style="background-color:#334155"></div>
+          <div class="absolute left-1/2 -translate-x-1/2 top-full" style="width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:4px solid #334155"></div>
+        </div>
+        <!-- Base application — solid dark cap at the left end (DAP 0) -->
+        <div class="optc-marker absolute left-0 top-0 bottom-0 rounded-l-full z-[4]" data-type="base" data-dap="0" style="width:20px; background-color:#2d5a7b;"></div>
+        <!-- Marker layer (JS fills) -->
+        <div id="optc-markers" class="absolute inset-0 z-[5] pointer-events-none"></div>
+        <!-- Drag thumb — star shape -->
+        <svg id="optc-thumb" viewBox="0 0 24 24" width="26" height="26" class="absolute z-20 cursor-grab active:cursor-grabbing" style="left:0;top:50%;transform:translate(-50%,-50%);overflow:visible;transition:left .15s ease;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.35))">
+          <path id="optc-thumb-path" d="M12 1 C13 9 15 11 23 12 C15 13 13 15 12 23 C11 15 9 13 1 12 C9 11 11 9 12 1 Z" fill="#10b981" stroke="white" stroke-width="2.2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <!-- DAP axis -->
+      <div id="optc-axis" class="relative h-4 mt-1"></div>
+    </div>
+
+    <div class="mt-3 text-xs text-gray-500 space-y-1">
+      <div><span class="inline-block align-middle" style="width:18px;height:8px;background-color:#2d5a7b;border-radius:4px 0 0 4px"></span> &nbsp;Base application — solid dark cap at the left end of the bar (DAP 0)</div>
+      <div><span class="inline-block align-middle" style="width:12px;height:12px;border-radius:50%;background:white;border:2.5px solid #1f2937"></span> &nbsp;Fertilizer — hollow sphere</div>
+      <div><span class="inline-block align-middle" style="width:13px;height:13px;border-radius:50%;background:#111827;border:2px solid white;box-shadow:0 0 0 1.5px #111827"></span> &nbsp;Next fertilizer — solid black sphere</div>
+      <div><svg viewBox="0 0 24 24" width="15" height="15" class="inline-block align-middle"><path d="M12 1 C13 9 15 11 23 12 C15 13 13 15 12 23 C11 15 9 13 1 12 C9 11 11 9 12 1 Z" fill="white" stroke="#1f2937" stroke-width="2.2" stroke-linejoin="round"/></svg> &nbsp;Sampling — four-pointed star outline</div>
+      <div><svg viewBox="0 0 24 24" width="16" height="16" class="inline-block align-middle"><path d="M12 1 C13 9 15 11 23 12 C15 13 13 15 12 23 C11 15 9 13 1 12 C9 11 11 9 12 1 Z" fill="#1f2937" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></svg> &nbsp;Selected sampling — filled star (thumb snaps to it)</div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── OPTION D — TICK-LINE STYLE ───────────────────────── -->
+  <section>
+    <div class="label-h mb-3">Option D — tick-line markers, irregular schedule (interactive)</div>
+    <p class="text-xs text-gray-500 mb-3 -mt-1">
+      Realistic, irregular schedule — samplings and fertilizer applications cluster and gap, they don't fall on a neat grid.
+      ○ hollow sphere = fertilizer · ● solid = next fertilizer · ✦ outline star = sampling · ★ filled = selected sampling · dark cap = base application (DAP 0).
+      <span class="text-emerald-700 font-medium">Drag the thumb — it snaps to the nearest sampling and the bubble shows that sampling's reading.</span>
+    </p>
+    <div class="section-bg rounded-xl px-6 pt-5 pb-4 select-none">
+      <!-- Stage legend chips -->
+      <div class="flex items-center gap-3 mb-3 flex-wrap">
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#10b981"></span>
+          <span class="text-[10px] font-bold text-gray-800">Vegetative</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#60a5fa"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Initiation</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#f59e0b"></span>
+          <span class="text-[10px] font-medium text-gray-400">Tuber Bulking</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color:#dc2626"></span>
+          <span class="text-[10px] font-medium text-gray-400">Maturation</span>
+        </div>
+      </div>
+
+      <!-- Bar (interactive) -->
+      <div id="optd-bar" class="relative h-10 rounded-full mb-2 mt-16 cursor-pointer touch-none">
+        <!-- Stage segments -->
+        <div class="absolute inset-0 flex rounded-full overflow-hidden">
+          <div style="width:30%; background-color:#10b981; opacity:1"></div>
+          <div style="width:20%; background-color:#60a5fa; opacity:0.3"></div>
+          <div style="width:30%; background-color:#f59e0b; opacity:0.3"></div>
+          <div style="width:20%; background-color:#dc2626; opacity:0.3"></div>
+        </div>
+
+        <!-- Faint 10-DAP ruler gridlines (injected by JS) -->
+        <div id="optd-grid" class="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-[1]"></div>
+
+        <!-- Hover tooltip (shared, follows the hovered marker) -->
+        <div id="optd-tip" class="absolute -translate-x-1/2 pointer-events-none transition-opacity duration-100" style="left:0; bottom:calc(100% + 16px); opacity:0; z-index:30">
+          <div class="bg-gray-900 text-white rounded-md px-2.5 py-1.5 shadow-lg" style="min-width:180px">
+            <div class="tt-title text-[11px] font-semibold leading-tight"></div>
+            <div class="tt-sub text-[10px] text-gray-300 leading-tight mt-0.5"></div>
+            <div class="tt-list text-[10px] text-gray-300 leading-snug mt-1.5 pt-1.5 border-t border-gray-700 space-y-0.5"></div>
+          </div>
+          <div class="absolute left-1/2 -translate-x-1/2 top-full" style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #111827"></div>
+        </div>
+
+        <!-- Selected-sampling bubble (always visible — reflects the sampling the thumb sits on) -->
+        <div id="optd-thumb-tip" class="absolute -translate-x-1/2 pointer-events-none transition-all duration-150" style="left:0; bottom:calc(100% + 16px); z-index:25">
+          <div id="optd-thumb-bubble" class="rounded-md px-2 py-1 shadow whitespace-nowrap text-[10px] font-semibold leading-tight text-center text-white" style="background-color:#334155"></div>
+          <div class="absolute left-1/2 -translate-x-1/2 top-full" style="width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:4px solid #334155"></div>
+        </div>
+
+        <!-- Base application — solid dark cap at the left end (DAP 0) -->
+        <div class="optd-marker absolute left-0 top-0 bottom-0 rounded-l-full z-[4]" data-type="base" data-dap="0" style="width:20px; background-color:#2d5a7b;"></div>
+
+        <!-- Marker layer (fertilizer + sampling markers injected by JS) -->
+        <div id="optd-markers" class="absolute inset-0 z-[5] pointer-events-none"></div>
+
+        <!-- Drag thumb (sampling selector) -->
+        <div id="optd-thumb" class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 border-[3px] border-white rounded-full shadow-md z-20 cursor-grab active:cursor-grabbing transition-all duration-150" style="left:0; background-color:#10b981"></div>
+      </div>
+
+      <!-- DAP axis (coarse ruler — labels injected by JS) -->
+      <div id="optd-axis" class="relative h-4 mt-1"></div>
+    </div>
+
+    <div class="mt-3 text-xs text-gray-500 space-y-1">
+      <div><span class="inline-block align-middle" style="width:18px;height:8px;background-color:#2d5a7b;border-radius:4px 0 0 4px"></span> &nbsp;Base application — solid dark cap at the left end of the bar (DAP 0)</div>
+      <div><span class="inline-block align-middle" style="width:2px;height:14px;background:#111827;box-shadow:0 0 0 1px white"></span> &nbsp;Fertilizer applied / planned — thin dark tick</div>
+      <div class="flex items-center gap-1"><span class="inline-block align-middle" style="width:3px;height:16px;background:#111827;border-radius:1.5px;box-shadow:0 0 0 1px white"></span><span class="inline-block align-middle" style="width:10px;height:10px;border-radius:50%;background:#111827;border:2px solid white;margin-left:2px"></span> &nbsp;Next fertilizer — thicker tick + cap circle</div>
+      <div><span class="inline-block align-middle" style="width:3px;height:14px;background:#d946ef;border-radius:2px;box-shadow:0 0 0 1px white"></span> &nbsp;Sampling — fuchsia tick (extends above + below bar)</div>
+      <div><span class="inline-block align-middle" style="width:4px;height:18px;background:#a21caf;border-radius:2px;box-shadow:0 0 0 1.5px white,0 0 6px rgba(162,28,175,0.35)"></span> &nbsp;Selected sampling — wider, darker fuchsia tick with glow (thumb snaps to it)</div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── SIDE-BY-SIDE CLOSE-UP ───────────────────────── -->
+  <section>
+    <div class="label-h mb-3">Close-up — Before vs Option A markers</div>
+    <div class="grid grid-cols-2 gap-6">
+      <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="text-xs font-semibold text-gray-700 mb-4">Before</div>
+        <div class="flex items-center gap-8">
+          <div class="flex flex-col items-center gap-2">
+            <div class="w-1.5 h-1.5 bg-fuchsia-500 border border-white shadow-sm" style="transform:rotate(45deg)"></div>
+            <span class="text-[10px] text-gray-500">Sample</span>
+          </div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="rounded-full border-2 border-white shadow-sm w-2 h-2 bg-gray-900"></div>
+            <span class="text-[10px] text-gray-500">Applied</span>
+          </div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="rounded-full border-2 border-white shadow-sm w-3 h-3 bg-gray-900 ring-2 ring-gray-300"></div>
+            <span class="text-[10px] text-gray-500">Next</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="text-xs font-semibold text-emerald-700 mb-4">Option A</div>
+        <div class="flex items-center gap-8">
+          <div class="flex flex-col items-center gap-2">
+            <div class="w-2.5 h-2.5 bg-fuchsia-500 border-2 border-white shadow-sm" style="transform:rotate(45deg)"></div>
+            <span class="text-[10px] text-gray-500">Sample</span>
+          </div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="rounded-full border-2 border-white shadow-sm w-2.5 h-2.5 bg-gray-900"></div>
+            <span class="text-[10px] text-gray-500">Applied</span>
+          </div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="rounded-full border-2 border-white shadow-sm w-3.5 h-3.5 bg-gray-900" style="box-shadow: 0 0 0 1.5px #d1d5db;"></div>
+            <span class="text-[10px] text-gray-500">Next</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── OPTION D CLOSE-UP ───────────────────────── -->
+  <section>
+    <div class="label-h mb-3">Close-up — Option C marker set</div>
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <div class="text-xs font-semibold text-gray-700 mb-4">Option D — tick-line vocabulary</div>
+      <div class="flex items-center gap-10 flex-wrap">
+        <div class="flex flex-col items-center gap-2">
+          <div style="width:22px;height:14px;background-color:#2d5a7b;border-radius:7px 0 0 7px"></div>
+          <span class="text-[10px] text-gray-500 text-center">Base<br>application</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <div style="width:14px;height:14px;border-radius:50%;background:white;border:2px solid #374151;box-shadow:0 1px 2px rgba(0,0,0,0.12)"></div>
+          <span class="text-[10px] text-gray-500 text-center">Fertilizer<br>(sphere)</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <div style="width:15px;height:15px;border-radius:50%;background:#111827;border:2px solid white;box-shadow:0 0 0 1px #111827,0 1px 2px rgba(0,0,0,0.18)"></div>
+          <span class="text-[10px] text-gray-500 text-center">Next<br>fertilizer</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 1 C13 9 15 11 23 12 C15 13 13 15 12 23 C11 15 9 13 1 12 C9 11 11 9 12 1 Z" fill="white" stroke="#374151" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span class="text-[10px] text-gray-500 text-center">Sampling<br>(star)</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 1 C13 9 15 11 23 12 C15 13 13 15 12 23 C11 15 9 13 1 12 C9 11 11 9 12 1 Z" fill="#1f2937" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span class="text-[10px] text-gray-500 text-center">Selected<br>sampling</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-xs text-gray-400 pt-6 border-t border-gray-200">
+    Mockup — purely visual. No live data wired. Sizes use Tailwind utilities so they map 1-to-1 to the Vue file.
+  </footer>
+
+</div>
+
+<script>
+// ── Option C — sphere / star interactive ──────────────────────────────────────
+(function () {
+  const bar      = document.getElementById('optc-bar');
+  const thumb    = document.getElementById('optc-thumb');
+  const thumbTip = document.getElementById('optc-thumb-tip');
+  const thumbBub = document.getElementById('optc-thumb-bubble');
+  const markersL = document.getElementById('optc-markers');
+  const gridL    = document.getElementById('optc-grid');
+  const axisL    = document.getElementById('optc-axis');
+  const tip      = document.getElementById('optc-tip');
+  const tipTitle = tip.querySelector('.tt-title');
+  const tipSub   = tip.querySelector('.tt-sub');
+  const tipList  = tip.querySelector('.tt-list');
+
+  const MAX_DAP = 120;
+  const baseDate = new Date(2026, 2, 1);
+  const p   = (dap) => (dap / MAX_DAP) * 100;
+  const fmt = (dap) => {
+    const d = new Date(baseDate); d.setDate(d.getDate() + dap);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  };
+  const stageColour = (dap) =>
+    dap >= 96 ? '#dc2626' : dap >= 60 ? '#f59e0b' : dap >= 36 ? '#60a5fa' : '#10b981';
+
+  const ferts = [
+    { dap: 12,  state: 'applied' },
+    { dap: 30,  state: 'applied' },
+    { dap: 35,  state: 'applied' },
+    { dap: 52,  state: 'next'    },
+    { dap: 82,  state: 'planned' },
+    { dap: 108, state: 'planned' },
+  ];
+  const samplings = [
+    { dap: 8,  reading: 'N low · pH 6.2'     },
+    { dap: 22, reading: 'N optimal · pH 6.4' },
+    { dap: 38, reading: 'K low · pH 6.3'     },
+    { dap: 45, reading: 'K optimal · pH 6.5' },
+    { dap: 70, reading: null },
+    { dap: 99, reading: null },
+  ];
+  const basalProducts = [
+    { name: 'DAP (18:46:0)', qty: '50 kg' },
+    { name: 'MOP (0:0:60)',  qty: '30 kg' },
+    { name: 'SSP (0:16:0)',  qty: '75 kg' },
+    { name: 'Zinc Sulphate', qty: '8 kg'  },
+    { name: 'Boron 20%',     qty: '2 kg'  },
+    { name: 'FYM',           qty: '2 t'   },
+  ];
+
+  const starSVG = (size, filled) =>
+    `<svg viewBox="0 0 24 24" width="${size}" height="${size}" style="overflow:visible;display:block"><path d="M12 1 C13 9 15 11 23 12 C15 13 13 15 12 23 C11 15 9 13 1 12 C9 11 11 9 12 1 Z" fill="${filled?'#1f2937':'white'}" stroke="${filled?'white':'#1f2937'}" stroke-width="${filled?1.6:2.2}" stroke-linejoin="round"/></svg>`;
+  const fertHTML = (solid) => solid
+    ? `<div style="width:14px;height:14px;border-radius:50%;background:#111827;border:2px solid white;box-shadow:0 0 0 1.5px #111827,0 1px 2px rgba(0,0,0,0.22)"></div>`
+    : `<div style="width:13px;height:13px;border-radius:50%;background:white;border:2.5px solid #1f2937;box-shadow:0 1px 2px rgba(0,0,0,0.18)"></div>`;
+
+  // Gridlines + axis
+  for (let d = 10; d < MAX_DAP; d += 10) {
+    const ln = document.createElement('div');
+    ln.style.cssText = `position:absolute;top:0;bottom:0;left:${p(d)}%;width:1px;background:rgba(0,0,0,0.06)`;
+    gridL.appendChild(ln);
+  }
+  for (let d = 0; d <= MAX_DAP; d += 10) {
+    const lbl = document.createElement('div');
+    lbl.style.cssText = `position:absolute;transform:translateX(-50%);font-size:9px;font-weight:500;color:#6b7280;left:${p(d)}%`;
+    if (d === 0) { lbl.style.fontWeight = '600'; lbl.style.color = '#374151'; }
+    lbl.textContent = d === 0 ? 'DAP 0' : d;
+    axisL.appendChild(lbl);
+  }
+
+  // Tooltip
+  function showTip(el) {
+    const t = el.dataset.type, dap = +el.dataset.dap;
+    let title = '', sub = '', listHTML = '';
+    if (t === 'base') {
+      title = 'Base application';
+      sub   = 'DAP 0 · ' + fmt(0) + ' · applied at planting';
+      listHTML = basalProducts.map(bp =>
+        `<div style="display:flex;justify-content:space-between;gap:16px"><span>${bp.name}</span><span style="color:#9ca3af">${bp.qty}/ac</span></div>`
+      ).join('');
+    } else if (t === 'fert') {
+      const s = el.dataset.state;
+      title = s === 'next' ? 'Next fertilizer — upcoming' : s === 'planned' ? 'Fertilizer — planned' : 'Fertilizer — applied';
+      sub   = 'DAP ' + dap + ' · ' + fmt(dap);
+    } else {
+      const r = el.dataset.reading;
+      title = r ? 'Sampling' : 'Sampling — scheduled';
+      sub   = 'DAP ' + dap + ' · ' + fmt(dap) + (r ? ' · ' + r : '');
+    }
+    tipTitle.textContent = title;
+    tipSub.textContent   = sub;
+    tipList.innerHTML    = listHTML;
+    tipList.style.display = listHTML ? '' : 'none';
+    tip.style.left       = Math.max(3, Math.min(97, p(dap))) + '%';
+    tip.style.opacity    = 1;
+    thumbTip.style.opacity = 0.2;
+  }
+  function hideTip() { tip.style.opacity = 0; thumbTip.style.opacity = 1; }
+
+  // Marker factory (centred — top 50%)
+  function makeMarker(dap, html, z, dataset) {
+    const el = document.createElement('div');
+    el.className = 'optc-marker';
+    el.style.cssText = `position:absolute;top:50%;left:${p(dap)}%;transform:translate(-50%,-50%);z-index:${z};pointer-events:auto;cursor:pointer`;
+    el.innerHTML = html;
+    Object.assign(el.dataset, { dap, ...dataset });
+    if (el.firstElementChild) el.firstElementChild.style.transition = 'transform .12s ease';
+    el.addEventListener('mouseenter', () => { showTip(el); if (el.firstElementChild) el.firstElementChild.style.transform = 'scale(1.3)'; });
+    el.addEventListener('mouseleave', () => { hideTip(); if (el.firstElementChild) el.firstElementChild.style.transform = ''; });
+    markersL.appendChild(el);
+    return el;
+  }
+
+  ferts.forEach(f => makeMarker(f.dap, fertHTML(f.state === 'next'), f.state === 'next' ? 6 : 5, { type: 'fert', state: f.state }));
+  const starEls = samplings.map(s => makeMarker(s.dap, starSVG(16, false), 5, { type: 'sampling', reading: s.reading || '' }));
+
+  // Base cap tooltip
+  const baseCap = document.querySelector('#optc-bar > .optc-marker[data-type="base"]');
+  if (baseCap) { baseCap.addEventListener('mouseenter', () => showTip(baseCap)); baseCap.addEventListener('mouseleave', hideTip); }
+
+  // Selection
+  let selIdx = samplings.reduce((best, s, i, a) => s.reading && (best < 0 || s.dap > a[best].dap) ? i : best, -1);
+  if (selIdx < 0) selIdx = 0;
+
+  function renderSelection() {
+    samplings.forEach((_, i) => {
+      const sel = i === selIdx;
+      starEls[i].innerHTML = starSVG(sel ? 20 : 16, sel);
+      starEls[i].style.zIndex = sel ? 8 : 5;
+      if (starEls[i].firstElementChild) starEls[i].firstElementChild.style.transition = 'transform .12s ease';
+    });
+    const s = samplings[selIdx];
+    thumb.style.left = p(s.dap) + '%';
+    document.getElementById('optc-thumb-path').setAttribute('fill', stageColour(s.dap));
+    thumbTip.style.left = p(s.dap) + '%';
+    thumbBub.innerHTML  = 'Sampling · DAP ' + s.dap + '<br>' + fmt(s.dap) + ' · ' + (s.reading || 'scheduled');
+  }
+  function selectNearest(dap) {
+    let best = 0, bd = Infinity;
+    samplings.forEach((s, i) => { const d = Math.abs(s.dap - dap); if (d < bd) { bd = d; best = i; } });
+    if (best !== selIdx) { selIdx = best; renderSelection(); }
+  }
+  renderSelection();
+
+  // Drag
+  let dragging = false;
+  const dapFromEvent = e => { const r = bar.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * MAX_DAP; };
+  bar.addEventListener('pointerdown', e => { dragging = true; selectNearest(dapFromEvent(e)); e.preventDefault(); });
+  window.addEventListener('pointermove', e => { if (dragging) selectNearest(dapFromEvent(e)); });
+  window.addEventListener('pointerup', () => { dragging = false; });
+})();
+
+// ── Option D — tick-line interactive ─────────────────────────────────────────
+(function () {
+  const bar      = document.getElementById('optd-bar');
+  const thumb    = document.getElementById('optd-thumb');
+  const thumbTip = document.getElementById('optd-thumb-tip');
+  const thumbBub = document.getElementById('optd-thumb-bubble');
+  const markersL = document.getElementById('optd-markers');
+  const gridL    = document.getElementById('optd-grid');
+  const axisL    = document.getElementById('optd-axis');
+  const tip      = document.getElementById('optd-tip');
+  const tipTitle = tip.querySelector('.tt-title');
+  const tipSub   = tip.querySelector('.tt-sub');
+  const tipList  = tip.querySelector('.tt-list');
+
+  const MAX_DAP = 120;
+  const baseDate = new Date(2026, 2, 1); // 01 Mar 2026 = planting (DAP 0)
+  const p   = (dap) => (dap / MAX_DAP) * 100;
+  const fmt = (dap) => {
+    const d = new Date(baseDate); d.setDate(d.getDate() + dap);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  };
+  const stageColour = (dap) =>
+    dap >= 96 ? '#dc2626' : dap >= 60 ? '#f59e0b' : dap >= 36 ? '#60a5fa' : '#10b981';
+
+  // ── Irregular real-world schedule ──────────────────────────
+  const ferts = [
+    { dap: 12,  state: 'applied' },
+    { dap: 30,  state: 'applied' },
+    { dap: 35,  state: 'applied' },  // cluster with DAP 30
+    { dap: 52,  state: 'next'    },  // upcoming dose
+    { dap: 82,  state: 'planned' },  // gap before this
+    { dap: 108, state: 'planned' },
+  ];
+  const samplings = [
+    { dap: 8,  reading: 'N low · pH 6.2'     },
+    { dap: 22, reading: 'N optimal · pH 6.4' },
+    { dap: 38, reading: 'K low · pH 6.3'     },
+    { dap: 45, reading: 'K optimal · pH 6.5' },  // cluster with DAP 38
+    { dap: 70, reading: null },  // scheduled
+    { dap: 99, reading: null },  // scheduled
+  ];
+
+  // Basal products applied at planting (shown in base-cap tooltip)
+  const basalProducts = [
+    { name: 'DAP (18:46:0)',  qty: '50 kg' },
+    { name: 'MOP (0:0:60)',   qty: '30 kg' },
+    { name: 'SSP (0:16:0)',   qty: '75 kg' },
+    { name: 'Zinc Sulphate',  qty: '8 kg'  },
+    { name: 'Boron 20%',      qty: '2 kg'  },
+    { name: 'FYM',            qty: '2 t'   },
+  ];
+
+  // ── 10-DAP ruler gridlines + axis labels ───────────────────
+  for (let d = 10; d < MAX_DAP; d += 10) {
+    const ln = document.createElement('div');
+    ln.style.cssText = `position:absolute;top:0;bottom:0;left:${p(d)}%;width:1px;background:rgba(0,0,0,0.06)`;
+    gridL.appendChild(ln);
+  }
+  for (let d = 0; d <= MAX_DAP; d += 10) {
+    const lbl = document.createElement('div');
+    lbl.style.cssText = `position:absolute;transform:translateX(-50%);font-size:9px;font-weight:500;color:#6b7280;left:${p(d)}%`;
+    if (d === 0) { lbl.style.fontWeight = '600'; lbl.style.color = '#374151'; }
+    lbl.textContent = d === 0 ? 'DAP 0' : d;
+    axisL.appendChild(lbl);
+  }
+
+  // ── Tooltip show / hide ────────────────────────────────────
+  function showTip(el) {
+    const t = el.dataset.type, dap = +el.dataset.dap;
+    let title = '', sub = '', listHTML = '';
+
+    if (t === 'base') {
+      title = 'Base application';
+      sub   = 'DAP 0 · ' + fmt(0) + ' · applied at planting';
+      listHTML = basalProducts.map(bp =>
+        `<div style="display:flex;justify-content:space-between;gap:16px">
+           <span>${bp.name}</span><span style="color:#9ca3af">${bp.qty}/ac</span>
+         </div>`
+      ).join('');
+    } else if (t === 'fert') {
+      const s = el.dataset.state;
+      title = s === 'next' ? 'Next fertilizer — upcoming'
+            : s === 'planned' ? 'Fertilizer — planned'
+            : 'Fertilizer — applied';
+      sub = 'DAP ' + dap + ' · ' + fmt(dap);
+    } else {
+      const r = el.dataset.reading;
+      title = r ? 'Sampling' : 'Sampling — scheduled';
+      sub   = 'DAP ' + dap + ' · ' + fmt(dap) + (r ? ' · ' + r : '');
+    }
+
+    tipTitle.textContent = title;
+    tipSub.textContent   = sub;
+    tipList.innerHTML    = listHTML;
+    tipList.style.display = listHTML ? '' : 'none';
+    tip.style.left       = Math.max(3, Math.min(97, p(dap))) + '%';
+    tip.style.opacity    = 1;
+    thumbTip.style.opacity = 0.2;
+  }
+  function hideTip() {
+    tip.style.opacity = 0;
+    thumbTip.style.opacity = 1;
+  }
+
+  // ── Marker factory (tick style, like Option B) ─────────────
+  function addMarker(el, dataset) {
+    el.className = 'optd-marker';
+    el.style.position = 'absolute';
+    el.style.pointerEvents = 'auto';
+    el.style.cursor = 'pointer';
+    Object.assign(el.dataset, dataset);
+    el.addEventListener('mouseenter', () => showTip(el));
+    el.addEventListener('mouseleave', hideTip);
+    markersL.appendChild(el);
+    return el;
+  }
+
+  // ── Fertilizer ticks ───────────────────────────────────────
+  ferts.forEach(f => {
+    if (f.state === 'next') {
+      // Thicker tick + cap circle above bar (Option B "next fert" style)
+      const cap = addMarker(document.createElement('div'), { type: 'fert', state: f.state, dap: f.dap });
+      cap.style.cssText += `;left:${p(f.dap)}%;transform:translateX(-50%);top:-12px;width:10px;height:10px;border-radius:50%;background:#111827;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3);z-index:7`;
+
+      const line = addMarker(document.createElement('div'), { type: 'fert', state: f.state, dap: f.dap });
+      line.style.cssText += `;left:${p(f.dap)}%;transform:translateX(-50%);top:-8px;height:calc(100% + 16px);width:3px;background:#111827;border-radius:1.5px;box-shadow:0 0 0 1px white;z-index:7`;
+    } else {
+      const line = addMarker(document.createElement('div'), { type: 'fert', state: f.state, dap: f.dap });
+      line.style.cssText += `;left:${p(f.dap)}%;transform:translateX(-50%);top:0;height:100%;width:2px;background:#111827;box-shadow:0 0 0 1px white;z-index:5`;
+    }
+  });
+
+  // ── Sampling ticks ─────────────────────────────────────────
+  const samplingEls = samplings.map(s => {
+    const el = addMarker(document.createElement('div'), { type: 'sampling', dap: s.dap, reading: s.reading || '' });
+    el.style.transform = 'translateX(-50%)';
+    el.style.borderRadius = '2px';
+    el.style.transition = 'top .15s, height .15s, width .15s, background .15s, box-shadow .15s';
+    return el;
+  });
+
+  function applyTickStyle(el, selected) {
+    el.style.left       = p(+el.dataset.dap) + '%';
+    el.style.top        = selected ? '-9px'               : '-5px';
+    el.style.height     = selected ? 'calc(100% + 18px)'  : 'calc(100% + 10px)';
+    el.style.width      = selected ? '4px'                : '3px';
+    el.style.background = selected ? '#a21caf'            : '#d946ef';
+    el.style.boxShadow  = selected
+      ? '0 0 0 1.5px white, 0 0 6px rgba(162,28,175,0.35)'
+      : '0 0 0 1px white';
+    el.style.zIndex = selected ? 8 : 6;
+  }
+
+  // ── Base-cap tooltip (declared in HTML, not in markersL) ───
+  const baseCap = document.querySelector('#optd-bar > .optd-marker[data-type="base"]');
+  if (baseCap) {
+    baseCap.addEventListener('mouseenter', () => showTip(baseCap));
+    baseCap.addEventListener('mouseleave', hideTip);
+  }
+
+  // ── Selection: thumb snaps to nearest sampling ─────────────
+  let selIdx = samplings.reduce((best, s, i, a) =>
+    s.reading && (best < 0 || s.dap > a[best].dap) ? i : best, -1);
+  if (selIdx < 0) selIdx = 0;
+
+  function renderSelection() {
+    samplings.forEach((_, i) => applyTickStyle(samplingEls[i], i === selIdx));
+    const s = samplings[selIdx];
+    thumb.style.left            = p(s.dap) + '%';
+    thumb.style.backgroundColor = stageColour(s.dap);
+    thumbTip.style.left         = p(s.dap) + '%';
+    thumbBub.innerHTML          = 'Sampling · DAP ' + s.dap + '<br>' + fmt(s.dap)
+                                + ' · ' + (s.reading || 'scheduled');
+  }
+
+  function selectNearest(dap) {
+    let best = 0, bd = Infinity;
+    samplings.forEach((s, i) => { const d = Math.abs(s.dap - dap); if (d < bd) { bd = d; best = i; } });
+    if (best !== selIdx) { selIdx = best; renderSelection(); }
+  }
+  renderSelection();
+
+  // ── Drag / click ───────────────────────────────────────────
+  let dragging = false;
+  const dapFromEvent = e => {
+    const r = bar.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * MAX_DAP;
+  };
+  bar.addEventListener('pointerdown', e => { dragging = true; selectNearest(dapFromEvent(e)); e.preventDefault(); });
+  window.addEventListener('pointermove', e => { if (dragging) selectNearest(dapFromEvent(e)); });
+  window.addEventListener('pointerup', () => { dragging = false; });
+})();
+</script>
+</body>
+</html>
